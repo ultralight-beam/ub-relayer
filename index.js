@@ -1,6 +1,7 @@
 const bleno = require('bleno');
 
 
+const UB_RELAYER_NAME = 'UB Relayer'
 const UB_SSID = 'c3fcb7cb-aed4-4a5a-9565-ca4cbb76b0ff'
 
 let BlenoPrimaryService = bleno.PrimaryService;
@@ -13,7 +14,7 @@ bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
 
   if (state === 'poweredOn') {
-    bleno.startAdvertising('echo', [UB_SSID]);
+    bleno.startAdvertising(UB_RELAYER_NAME, [UB_SSID]);
   } else {
     bleno.stopAdvertising();
   }
