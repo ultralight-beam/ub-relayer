@@ -21,7 +21,7 @@ wss.on('connection', function connection(ws) {
 function relay(msg) {
   console.log(`Broadcasting to ${connections.length} nodes...`);
   connections.forEach(function(conn) {
-    console.log(`Sending message :: ${msg} to :: ${conn});
+    console.log(`Sending message :: ${msg} to :: ${conn}`);
     conn.send(msg);
   })
 }
