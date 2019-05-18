@@ -6,22 +6,12 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({port: 8000});
 const BlenoCharacteristic = bleno.Characteristic;
 const UUID = '00000000-0000-0000-0000-000000000001'
-const EchoCharacteristic = function() {
-  EchoCharacteristic.super_.call(this, {
-    uuid: UUID,
-    properties: ['read', 'write', 'notify'],
-    value: null
-  });
-
-  this._value = Buffer.alloc(0);
-  this._updateValueCallback = null;
-};
 
 // WS Global
 let connections = [];
 wss.on('connection', function connection(ws) {
   connections.push(ws);
-	
+
   ws.on('message', function incoming(message) {
     relay(message)
   });
@@ -33,6 +23,18 @@ function relay(msg) {
     conn.send(msg);
   })
 }
+
+// Main Entry Point
+const EchoCharacteristic = function(type) {
+  EchoCharacteristic.super_.call(this, {
+    uuid: UUID,
+    properties: ['read', 'write', 'notify'],
+    value: null
+  });
+  this._type = type;
+  this._value = Buffer.alloc(0);
+  this._updateValueCallback = null;
+};
 
 util.inherits(EchoCharacteristic, BlenoCharacteristic);
 
@@ -53,7 +55,10 @@ EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
   if (this._updateValueCallback) {
     console.log('EchoCharacteristic - onWriteRequest: notifying');
 
-    this._updateValueCallback(this._value);
+    // this._updateValueCallback(this._value);
+    connections.forEach(function(conn) {
+      conn.send(this._value);
+    })
   }
 
   callback(this.RESULT_SUCCESS);

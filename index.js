@@ -40,7 +40,7 @@ bleno.on('advertisingStart', function(error) {
     bleno.setServices([
       new BlenoPrimaryService({
         uuid: UB_SSID,
-        characteristics: characteristics.map(Characteristic => new Characteristic())
+        characteristics: characteristics.map(Characteristic => new Characteristic(process.argv[1]))
       })
     ]);
   }
