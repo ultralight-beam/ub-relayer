@@ -19,7 +19,9 @@ wss.on('connection', function connection(ws) {
 });
 
 function relay(msg) {
+  console.log(`Broadcasting to ${connections.length} nodes...);
   connections.forEach(function(conn) {
+    console.log(`Sending message :: ${msg} to :: ${conn});
     conn.send(msg);
   })
 }
@@ -53,7 +55,7 @@ EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
   console.log(this._value);
 
   if (this._updateValueCallback) {
-    console.log('EchoCharacteristic - onWriteRequest: notifying');
+    console.log('EchoCharacteristic - onWriteRequest: Begin broadcast...');
     relay(this._value);
   }
 
