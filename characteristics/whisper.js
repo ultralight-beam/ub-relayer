@@ -5,7 +5,7 @@ const WebSocket = require('ws');
 // Setup
 const wss = new WebSocket.Server({port: 8000});
 const BlenoCharacteristic = bleno.Characteristic;
-const UUID = '00000000-0000-0000-0000-000000000001'
+const UUID = '00000000-0000-0000-0000-000000000001';
 
 // WS Global
 let connections = [];
