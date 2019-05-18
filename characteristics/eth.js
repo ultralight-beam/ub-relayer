@@ -1,29 +1,12 @@
 const util = require('util');
 const bleno = require('bleno');
-const WebSocket = require('ws');
 
 // Setup
-const wss = new WebSocket.Server({port: 8000});
 const BlenoCharacteristic = bleno.Characteristic;
 const UUID = '00000000-0000-0000-0000-000000000002';
 
-// WS Global
-let connections = [];
-wss.on('connection', function connection(ws) {
-	connections.push(ws);
-
-	ws.on('message', function incoming(message) {
-		relay(message)
-	});
-
-});
-
 function relay(msg) {
-	console.log(`Broadcasting to ${connections.length} nodes...`);
-	connections.forEach(function(conn) {
-		console.log(`Sending message :: ${msg} to :: ${conn}`);
-		conn.send(msg);
-	})
+  console.log('eth relay')
 }
 
 // Main Entry Point

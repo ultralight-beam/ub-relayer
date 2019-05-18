@@ -9,8 +9,8 @@ const UUID = '00000000-0000-0000-0000-000000000001';
 
 // WS Global
 let connections = [];
-wss.on('connection', function connection(ws) {
-  connections.push(ws);
+wss.on('connection', function connection(ws, req) {
+  connections.push({ws, connection: req.connection});
 
   ws.on('message', function incoming(message) {
     relay(message)
@@ -21,8 +21,8 @@ wss.on('connection', function connection(ws) {
 function relay(msg) {
   console.log(`Broadcasting to ${connections.length} nodes...`);
   connections.forEach(function(conn) {
-    console.log(`Sending message :: ${msg} to :: ${conn}`);
-    conn.send(msg);
+    console.log(`Sending message :: ${msg} to ${conn.connection.remoteAddress}`);
+    conn.ws.send(msg);
   })
 }
 
@@ -43,7 +43,6 @@ util.inherits(EchoCharacteristic, BlenoCharacteristic);
 // Listeners
 EchoCharacteristic.prototype.onReadRequest = function(offset, callback) {
   console.log('EchoCharacteristic - onReadRequest: value = ' + this._value.toString('utf8'));
-  console.log(this._value);
 
   callback(this.RESULT_SUCCESS, this._value);
 };
@@ -56,8 +55,8 @@ EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
 
   if (this._updateValueCallback) {
     console.log('EchoCharacteristic - onWriteRequest: Begin broadcast...');
-    relay(this._value);
   }
+  relay(this._value);
 
   callback(this.RESULT_SUCCESS);
 };
