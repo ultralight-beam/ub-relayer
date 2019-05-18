@@ -54,11 +54,7 @@ EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
 
   if (this._updateValueCallback) {
     console.log('EchoCharacteristic - onWriteRequest: notifying');
-
-    // this._updateValueCallback(this._value);
-    connections.forEach(function(conn) {
-      conn.send(this._value);
-    })
+    relay(this._value);
   }
 
   callback(this.RESULT_SUCCESS);
