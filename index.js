@@ -1,6 +1,7 @@
 const bleno = require('bleno');
 
-const UB_SSID = 0x55423639;
+
+const UB_SSID = 'c3fcb7cb-aed4-4a5a-9565-ca4cbb76b0ff'
 
 let BlenoPrimaryService = bleno.PrimaryService;
 
