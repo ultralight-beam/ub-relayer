@@ -2,7 +2,7 @@ const bleno = require('bleno');
 
 
 const UB_RELAYER_NAME = 'UB Relayer'
-const UB_SSID = 'c3fcb7cb-aed4-4a5a-9565-ca4cbb76b0ff'
+const UB_SSID = '00756c74-7261-6c69-6768-74206265616d'
 
 let BlenoPrimaryService = bleno.PrimaryService;
 
