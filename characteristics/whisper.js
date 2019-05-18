@@ -1,12 +1,12 @@
-var util = require('util');
+const util = require('util');
+const bleno = require('bleno');
+const WebSocket = require('ws');
 
-var bleno = require('bleno');
-
-var BlenoCharacteristic = bleno.Characteristic;
-
+// Setup
+const wss = new WebSocket.Server({port: 8000});
+const BlenoCharacteristic = bleno.Characteristic;
 const UUID = '00000000-0000-0000-0000-000000000001'
-
-var EchoCharacteristic = function() {
+const EchoCharacteristic = function() {
   EchoCharacteristic.super_.call(this, {
     uuid: UUID,
     properties: ['read', 'write', 'notify'],
@@ -17,8 +17,26 @@ var EchoCharacteristic = function() {
   this._updateValueCallback = null;
 };
 
+// WS Global
+let connections = [];
+wss.on('connection', function connection(ws) {
+  connections.push(ws);
+	
+  ws.on('message', function incoming(message) {
+    relay(message)
+  });
+
+});
+
+function relay(msg) {
+  connections.forEach(function(conn) {
+    conn.send(msg);
+  })
+}
+
 util.inherits(EchoCharacteristic, BlenoCharacteristic);
 
+// Listeners
 EchoCharacteristic.prototype.onReadRequest = function(offset, callback) {
   console.log('EchoCharacteristic - onReadRequest: value = ' + this._value.toString('utf8'));
   console.log(this._value);
