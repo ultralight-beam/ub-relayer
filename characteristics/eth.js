@@ -1,12 +1,16 @@
 const util = require('util');
 const bleno = require('bleno');
+const ethers = require('ethers');
 
 // Setup
 const BlenoCharacteristic = bleno.Characteristic;
 const UUID = '00000000-0000-0000-0000-000000000002';
+const provider = ethers.getDefaultProvider('goerli')
 
 function relay(msg) {
-  console.log('eth relay')
+  const tx = msg.toString('utf8')
+  console.log('relay to goerli', tx);
+  return provider.sendTransaction(tx);
 }
 
 // Main Entry Point
@@ -37,10 +41,17 @@ EthCharacteristic.prototype.onWriteRequest = function(data, offset, withoutRespo
 	console.log('EthCharacteristic - onWriteRequest: value = ' + this._value.toString('utf8'));
 	console.log(this._value);
 
-	if (this._updateValueCallback) {
-		console.log('EthCharacteristic - onWriteRequest: Begin broadcast...');
-		relay(this._value);
-	}
+  relay(this._value).then(tx => {
+    console.log(JSON.stringify(tx))
+    const url = 'https://goerli.etherscan.io/tx/' + tx.hash;
+    console.log(url);
+
+    if (this._updateValueCallback) {
+      this._updateValueCallback(Buffer.from(url));
+    }
+  }).catch(e => {
+    console.log(e)
+  });
 
 	callback(this.RESULT_SUCCESS);
 };
